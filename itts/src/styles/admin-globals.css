@@ -1,0 +1,19 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .table {
+    display: block;
+  }
+}
+
+span.field-label {
+  display: flex;
+  color: var(--theme-elevation-800);
+  font-family: var(--font-body);
+}
+
+span.field-label .required {
+  margin-left: 5px;
+  color: var(--theme-error-500);
+}

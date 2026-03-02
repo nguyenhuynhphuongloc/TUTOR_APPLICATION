@@ -1,0 +1,16 @@
+.custom-array {
+  .array-field__draggable-rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--base) / 2);
+  }
+  .array-field__header-wrap {
+    // justify-content: end;
+    .array-field__header-content {
+      // display: none;
+    }
+  }
+  .field-type.text .field-label {
+    // display: none;
+  }
+}
