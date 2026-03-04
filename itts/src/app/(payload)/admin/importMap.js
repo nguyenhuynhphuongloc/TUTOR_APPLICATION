@@ -19,14 +19,18 @@ import { default as default_30e454c68bd2f6c3502aaaabd8a1d8c1 } from '@/payload/c
 import { default as default_061d36a048894f686f64d2ef1d4fc883 } from '@/payload/components/ui/care.field'
 import { default as default_f9a792af90886f5057215263a12ef0f9 } from '@/payload/components/ui/AttendaceRecord.field'
 import { default as default_b61f83c7e32295efe3e3b1606bc9deba } from '@/components/RolePermissions/index.tsx'
+import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
+import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { CustomNav as CustomNav_7a25bf58b9bf0789c79437d44273b9e5 } from 'payload-sidebar-plugin/rsc'
 import { default as default_936093e88cc5cd825e5335425695536f } from '@/components/logo/icon'
 import { default as default_7a89b5675912f3f4f82dd41bbb03d52e } from '@/components/logo'
+import { SearchWrapper as SearchWrapper_5400ac5ea24f4363783c781edd0c24e3 } from '@jhb.software/payload-admin-search/client'
 import { default as default_046a7ccaa7135137fa523498f9b666a1 } from '@/components/afterNavLinks/loivipham.tsx'
 import { default as default_4a3bde20d4f76bf00d5b259b115cae13 } from '@/components/ui/BeforeDashboard'
 import { default as default_aeef0123fea1af819397817664b7330c } from '@/components/AdminProviders'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { default as default_e727f6a9979e500ce6346d076d36ff6f } from '@/components/StudentViolation/index.tsx'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "@/payload/cell/CellCurrency#default": default_e23a140f61045c2624b6774219f89f67,
@@ -50,12 +54,16 @@ export const importMap = {
   "@/payload/components/ui/care.field#default": default_061d36a048894f686f64d2ef1d4fc883,
   "@/payload/components/ui/AttendaceRecord.field#default": default_f9a792af90886f5057215263a12ef0f9,
   "@/components/RolePermissions/index.tsx#default": default_b61f83c7e32295efe3e3b1606bc9deba,
+  "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
+  "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "payload-sidebar-plugin/rsc#CustomNav": CustomNav_7a25bf58b9bf0789c79437d44273b9e5,
   "@/components/logo/icon#default": default_936093e88cc5cd825e5335425695536f,
   "@/components/logo#default": default_7a89b5675912f3f4f82dd41bbb03d52e,
+  "@jhb.software/payload-admin-search/client#SearchWrapper": SearchWrapper_5400ac5ea24f4363783c781edd0c24e3,
   "@/components/afterNavLinks/loivipham.tsx#default": default_046a7ccaa7135137fa523498f9b666a1,
   "@/components/ui/BeforeDashboard#default": default_4a3bde20d4f76bf00d5b259b115cae13,
   "@/components/AdminProviders#default": default_aeef0123fea1af819397817664b7330c,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
-  "@/components/StudentViolation/index.tsx#default": default_e727f6a9979e500ce6346d076d36ff6f
+  "@/components/StudentViolation/index.tsx#default": default_e727f6a9979e500ce6346d076d36ff6f,
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

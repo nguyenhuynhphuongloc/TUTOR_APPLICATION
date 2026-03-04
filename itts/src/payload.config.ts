@@ -4,6 +4,7 @@ import globals from "@/payload/globals";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { s3Storage } from "@payloadcms/storage-s3";
+import { searchPlugin } from "@payloadcms/plugin-search";
 import { vi } from "@payloadcms/translations/languages/vi";
 import path from "path";
 import { buildConfig } from "payload";
@@ -11,11 +12,17 @@ import { payloadSidebar } from "payload-sidebar-plugin";
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 import { DEFAULT_BADGE_COLORS } from "./constants";
-
+import { adminSearchPlugin } from "@jhb.software/payload-admin-search";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 export default buildConfig({
+  onInit: async (payload) => {
+    const { startCronJobs } = await import(
+      "./payload/utilities/cronScheduler"
+    );
+    startCronJobs(payload);
+  },
   admin: {
     user: "admins",
     theme: "light",
@@ -53,7 +60,7 @@ export default buildConfig({
     pool: {
       connectionString: env.DATABASE_URL,
     },
-    push: true,
+    push: false,
   }),
   email: nodemailerAdapter({
     defaultFromAddress: env.EMAIL_FROM,
@@ -78,6 +85,7 @@ export default buildConfig({
   //},
   sharp,
   plugins: [
+    adminSearchPlugin({ headerSearchComponentStyle: 'bar', }),
     payloadSidebar({
       cssVariables: {
         /* Màu chữ */
@@ -128,9 +136,11 @@ export default buildConfig({
         words: "SpellCheck",
         tests: "Database",
         role_permissions: "Permission",
+        notifications: "Bell",
       },
       pinnedStorage: "localStorage",
     }),
+
     s3Storage({
       collections: {
         media: {
@@ -150,10 +160,79 @@ export default buildConfig({
       clientUploads: true,
       signedDownloads: true,
     }),
+    searchPlugin({
+      collections: ["classes", "leads", "users", "admins", "courses", "orders"],
+      searchOverrides: {
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          {
+            name: "phone",
+            type: "text",
+          },
+          {
+            name: "email",
+            type: "text",
+          },
+        ],
+      },
+      beforeSync: ({ originalDoc, searchDoc }) => {
+        const { collection } = searchDoc;
+
+        if (collection === "leads") {
+          return {
+            ...searchDoc,
+            title: `${originalDoc.full_name} - ${originalDoc.phone} - ${originalDoc.email}`,
+            phone: originalDoc.phone,
+            email: originalDoc.email,
+          };
+        }
+
+        if (collection === "admins") {
+          return {
+            ...searchDoc,
+            title: `${originalDoc.full_name} - ${originalDoc.phone} - ${originalDoc.email}`,
+            phone: originalDoc.phone,
+            email: originalDoc.email,
+          };
+        }
+
+        return searchDoc;
+      },
+      defaultPriorities: {
+        classes: 10,
+        leads: 20,
+      },
+    }),
+
   ],
   i18n: {
     supportedLanguages: { vi },
     fallbackLanguage: "vi",
+    translations: {
+      vi: {
+        "@jhb.software/payload-admin-search": {
+          closeSearchModal: "Đóng ô tìm kiếm",
+          errorSearching: "Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại.",
+          escapeHint: "ESC",
+          noResultsFound: 'Không tìm thấy kết quả cho "{query}"',
+          noResultsHint: "Thử từ khóa khác hoặc kiểm tra chính tả",
+          openCollectionLabel: "Mở bộ sưu tập {label}",
+          openDocumentIn: "Mở {title} trong {collection}",
+          openGlobalLabel: "Mở {label} toàn cầu",
+          pillCollection: "Bộ sưu tập",
+          pillGlobal: "Toàn cầu",
+          searchForDocuments: "Tìm kiếm tài liệu",
+          searchInput: "Nhập tìm kiếm",
+          searchModalContent: "Nội dung tìm kiếm",
+          searchPlaceholder: "Tìm kiếm...",
+          searchTooltip: "Tìm kiếm ({shortcut})",
+          toClose: "để đóng",
+          toNavigate: "để di chuyển",
+          toOpen: "để mở",
+          unknownCollection: "Không xác định",
+        },
+      },
+    },
   },
   upload: {
     limits: {

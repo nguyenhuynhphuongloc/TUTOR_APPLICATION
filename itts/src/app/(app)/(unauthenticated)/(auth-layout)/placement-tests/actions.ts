@@ -47,44 +47,47 @@ export async function register({
     // }
 
     const payload = await getPayload({ config: configPromise });
-    const { docs } = await payload.find({
-      collection: "leads",
-      limit: 1,
-      where: {
-        phone: {
-          equals: phoneNumber,
+    try {
+      const { docs } = await payload.find({
+        collection: "leads",
+        limit: 1,
+        overrideAccess: true,
+        where: {
+          phone: {
+            equals: phoneNumber,
+          },
         },
-      },
-    });
+      });
 
-    if (docs[0]?.id) {
-      return { success: true, data: docs[0].id, message: undefined };
+      if (docs[0]?.id) {
+        return { success: true, data: docs[0].id, message: undefined };
+      }
+
+      const { id } = await payload.create({
+        collection: "leads",
+        overrideAccess: true,
+        data: {
+          branch,
+          email,
+          fullName,
+          phone: phoneNumber,
+          target: Number(target),
+          source: "from_website",
+          status: "test_booked",
+        },
+      });
+
+      return { success: true, data: id, message: undefined };
+    } catch (dbError) {
+      console.error("Payload/DB Error Detail:", JSON.stringify(dbError, null, 2));
+      throw dbError;
     }
-
-    // const systemSaleInCharge = await payload.find({
-    //   collection: "admins",
-    // });
-
-    const { id } = await payload.create({
-      collection: "leads",
-      data: {
-        branch,
-        email,
-        fullName,
-        phone: phoneNumber,
-        target: Number(target),
-        source: "from_website",
-        // saleInCharge: systemSaleInCharge.docs[0],
-        status: "test_booked",
-      },
-    });
-
-    return { success: true, data: id, message: undefined };
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Register Action Error:", error);
     return {
       success: false,
       error_code: "internal_server_error",
-      message: error instanceof Error ? error.message : String(error),
+      message: error.message || "Internal Server Error",
     };
   }
 }

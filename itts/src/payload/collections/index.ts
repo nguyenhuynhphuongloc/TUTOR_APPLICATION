@@ -10,6 +10,7 @@ import { Courses } from "./Courses";
 import { Feedbacks } from "./Feedbacks";
 import { Leads } from "./Leads";
 import { Media } from "./Media";
+import { Notifications } from "./Notifications";
 import { Orders } from "./Orders";
 import { Pages } from "./Pages";
 import { PeriodicTestAttempts } from "./PeriodicTestAttempts";
@@ -54,6 +55,7 @@ const collections: CollectionConfig[] = [
   StudentCare,
   TestBackups,
   AttendanceRecord,
+  Notifications,
   RolePermissions,
   // QuestionSets,
 ];

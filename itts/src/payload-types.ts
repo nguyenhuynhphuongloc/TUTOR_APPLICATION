@@ -94,7 +94,9 @@ export interface Config {
     care: Care;
     test_backups: TestBackup;
     attendanceRecords: AttendanceRecord;
+    notifications: Notification;
     role_permissions: RolePermission;
+    search: Search;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -128,7 +130,9 @@ export interface Config {
     care: CareSelect<false> | CareSelect<true>;
     test_backups: TestBackupsSelect<false> | TestBackupsSelect<true>;
     attendanceRecords: AttendanceRecordsSelect<false> | AttendanceRecordsSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     role_permissions: RolePermissionsSelect<false> | RolePermissionsSelect<true>;
+    search: SearchSelect<false> | SearchSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -145,13 +149,10 @@ export interface Config {
     'side-bar': SideBarSelect<false> | SideBarSelect<true>;
   };
   locale: null;
-  user:
-    | (User & {
-        collection: 'users';
-      })
-    | (Admin & {
-        collection: 'admins';
-      });
+  widgets: {
+    collections: CollectionsWidget;
+  };
+  user: User | Admin;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -1099,6 +1100,7 @@ export interface Admin {
       }[]
     | null;
   password?: string | null;
+  collection: 'admins';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1330,6 +1332,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1618,6 +1621,22 @@ export interface AttendanceRecord {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: string;
+  type: 'attendance_reminder';
+  title: string;
+  message: string;
+  recipient: string | Admin;
+  class: string | Class;
+  session_date: string;
+  is_read?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "role_permissions".
  */
 export interface RolePermission {
@@ -1631,6 +1650,46 @@ export interface RolePermission {
     | number
     | boolean
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "search".
+ */
+export interface Search {
+  id: string;
+  title?: string | null;
+  priority?: number | null;
+  doc:
+    | {
+        relationTo: 'classes';
+        value: string | Class;
+      }
+    | {
+        relationTo: 'leads';
+        value: string | Lead;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'admins';
+        value: string | Admin;
+      }
+    | {
+        relationTo: 'courses';
+        value: string | Course;
+      }
+    | {
+        relationTo: 'orders';
+        value: string | Order;
+      };
+  phone?: string | null;
+  email?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1763,8 +1822,16 @@ export interface PayloadLockedDocument {
         value: string | AttendanceRecord;
       } | null)
     | ({
+        relationTo: 'notifications';
+        value: string | Notification;
+      } | null)
+    | ({
         relationTo: 'role_permissions';
         value: string | RolePermission;
+      } | null)
+    | ({
+        relationTo: 'search';
+        value: string | Search;
       } | null);
   globalSlug?: string | null;
   user:
@@ -2973,10 +3040,38 @@ export interface AttendanceRecordsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  type?: T;
+  title?: T;
+  message?: T;
+  recipient?: T;
+  class?: T;
+  session_date?: T;
+  is_read?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "role_permissions_select".
  */
 export interface RolePermissionsSelect<T extends boolean = true> {
   permissions?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "search_select".
+ */
+export interface SearchSelect<T extends boolean = true> {
+  title?: T;
+  priority?: T;
+  doc?: T;
+  phone?: T;
+  email?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3066,6 +3161,16 @@ export interface SideBarSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
